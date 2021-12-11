@@ -3,7 +3,7 @@ from aqt import mw, gui_hooks
 from aqt.utils import showInfo, qconnect
 # import all of the Qt GUI library
 from aqt.qt import *
-from . import MyWidgets
+from . import MainWindow
 
 
 def testFunction() -> None:
@@ -33,8 +33,6 @@ def state_did_change(new_state, old_State) -> None:
 
 
 def update_progress():
-    # card = mw.reviewer.card
-
     deck_id = mw.col.decks.current()['id']
     config = mw.col.decks.get_config(1)
     card_to_be_done = len(mw.col.find_cards('did:%d and is:due' % deck_id))
@@ -62,6 +60,11 @@ def update_progress():
         'total': len(mw.col.find_cards('is:due'))
     })
 
+    data = [None] * 61
+    for i in range(61):
+        data[i] = len(mw.col.find_cards('did:%d and prop:due=%d' % (deck_id, i)))
+    window.update_future_due_chart(data)
+
 
 # create a new menu item, "test"
 action = QAction("test", mw)
@@ -74,7 +77,7 @@ gui_hooks.reviewer_did_answer_card.append(reviewer_did_answer_card)
 gui_hooks.overview_did_refresh.append(aaa)
 gui_hooks.state_did_change.append(state_did_change)
 
-window = MyWidgets.MainWindow()
+window = MainWindow.MainWindow()
 
 
 
